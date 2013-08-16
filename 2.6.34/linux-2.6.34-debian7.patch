@@ -1,0 +1,33 @@
+diff -Nur linux-2.6.34/arch/x86/kernel/entry_64.S linux-2.6.34.xyb/arch/x86/kernel/entry_64.S
+--- linux-2.6.34/arch/x86/kernel/entry_64.S	2010-05-16 14:17:36.000000000 -0700
++++ linux-2.6.34.xyb/arch/x86/kernel/entry_64.S	2013-08-16 03:25:52.373887902 -0700
+@@ -1268,7 +1268,7 @@
+ 	decl PER_CPU_VAR(irq_count)
+ 	jmp  error_exit
+ 	CFI_ENDPROC
+-END(do_hypervisor_callback)
++END(xen_do_hypervisor_callback)
+ 
+ /*
+  * Hypervisor uses this for application faults while it executes.
+diff -Nur linux-2.6.34/arch/x86/vdso/Makefile linux-2.6.34.xyb/arch/x86/vdso/Makefile
+--- linux-2.6.34/arch/x86/vdso/Makefile	2010-05-16 14:17:36.000000000 -0700
++++ linux-2.6.34.xyb/arch/x86/vdso/Makefile	2013-08-16 03:26:30.897403595 -0700
+@@ -25,7 +25,7 @@
+ 
+ export CPPFLAGS_vdso.lds += -P -C
+ 
+-VDSO_LDFLAGS_vdso.lds = -m elf_x86_64 -Wl,-soname=linux-vdso.so.1 \
++VDSO_LDFLAGS_vdso.lds = -m64 -Wl,-soname=linux-vdso.so.1 \
+ 		      	-Wl,-z,max-page-size=4096 -Wl,-z,common-page-size=4096
+ 
+ $(obj)/vdso.o: $(src)/vdso.S $(obj)/vdso.so
+@@ -69,7 +69,7 @@
+ vdso32-images			= $(vdso32.so-y:%=vdso32-%.so)
+ 
+ CPPFLAGS_vdso32.lds = $(CPPFLAGS_vdso.lds)
+-VDSO_LDFLAGS_vdso32.lds = -m elf_i386 -Wl,-soname=linux-gate.so.1
++VDSO_LDFLAGS_vdso32.lds = -m32 -Wl,-soname=linux-gate.so.1
+ 
+ # This makes sure the $(obj) subdirectory exists even though vdso32/
+ # is not a kbuild sub-make subdirectory.
